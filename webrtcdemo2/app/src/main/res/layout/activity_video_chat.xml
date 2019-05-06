@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="vertical"
+                android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/gl_surface"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+
+            android:visibility="visible"/>
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/gl_surface_local"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:visibility="visible"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/call_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="10dp"
+        android:textSize="30sp"
+        android:textColor="@color/white"
+        android:layout_alignParentTop="true"
+        tools:text="张三"
+        />
+
+    <TextView
+        android:id="@+id/call_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_below="@id/call_name"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="10dp"
+        tools:text="正在等待对方接受邀请"
+        />
+
+    <ImageButton
+        android:id="@+id/hangUpButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/round_red_button"
+
+        android:src="@drawable/ic_action_end_call"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        />
+
+    <ImageButton
+        android:id="@+id/answerCallButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/round_green_button"
+
+        android:src="@drawable/ic_action_call"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:layout_above="@id/hangUpButton"
+        />
+</RelativeLayout>
