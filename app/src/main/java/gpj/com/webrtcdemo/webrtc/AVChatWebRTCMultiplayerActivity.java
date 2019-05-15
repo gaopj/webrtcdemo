@@ -147,8 +147,14 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
         }
         mNbmWebRTCPeer = new NBMWebRTCPeer(mWebRTCManager.getPeerConnectionParameters(), this, mLocalView, this);
         mWebRTCManager.setNbmWebRTCPeer(mNbmWebRTCPeer);
-        Log.i(TAG, "Initializing nbmWebRTCPeer...");
-        mNbmWebRTCPeer.initialize();
+
+        mWebRTCManager.initPeer = false;
+        if (mWebRTCManager.getKurentoRoomAPI().isWebSocketConnected()) {
+            Log.i(TAG, "Initializing nbmWebRTCPeer...");
+            mNbmWebRTCPeer.initialize();
+            mWebRTCManager.initPeer = true;
+        }
+
         switch (mWebRTCManager.getCallType()) {
             case OFFER_PHONE_TYPE:
                 callStatusView();

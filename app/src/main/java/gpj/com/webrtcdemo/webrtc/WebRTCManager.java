@@ -95,8 +95,11 @@ public class WebRTCManager implements RoomListener {
 
     private AsyncPlayer asyncPlayer; // 用于播放铃声等音乐
 
+    protected volatile boolean initPeer; // 用于解决房间websocket 连接滞后于Peer初始化的问题
+
 
     public WebRTCManager init(Context context) {
+        initPeer = true;
         if (mContext == null)
             mContext = context.getApplicationContext();
         if (mExecutor == null)
@@ -128,6 +131,7 @@ public class WebRTCManager implements RoomListener {
         userPublishList = new ConcurrentHashMap<>();
         mHandler = new Handler();
         mSurfaceUserArray = new ChatUser[REMOTE_SURFACE_NUMBER];
+
         return this;
     }
 
@@ -331,7 +335,11 @@ public class WebRTCManager implements RoomListener {
     @Override
     public void onRoomConnected() {
         Log.d(TAG, "onRoomConnected()");
-
+        if (!initPeer) {
+            Log.i(TAG, "Initializing nbmWebRTCPeer...");
+            mNbmWebRTCPeer.initialize();
+            initPeer = true;
+        }
     }
 
     protected void joinRoom(String roomid) {

@@ -57,6 +57,8 @@ public class AVChatWebRTCActivity extends AppCompatActivity implements NBMWebRTC
     private String mOtherName; // 对方昵称
     private Observer<WebRTCManager.CallState> statusObserver;
 
+
+
     protected static void outgoingCall(Context context, String otherName) {
         Intent intent = new Intent();
         intent.setClass(context, AVChatWebRTCActivity.class);
@@ -143,8 +145,12 @@ public class AVChatWebRTCActivity extends AppCompatActivity implements NBMWebRTC
         mNbmWebRTCPeer = new NBMWebRTCPeer(mWebRTCManager.mPeerConnectionParameters, this, mLocalView, this);
         mWebRTCManager.setNbmWebRTCPeer(mNbmWebRTCPeer);
         mNbmWebRTCPeer.registerMasterRenderer(mMasterView);
-        Log.i(TAG, "Initializing nbmWebRTCPeer...");
-        mNbmWebRTCPeer.initialize();
+        mWebRTCManager.initPeer = false;
+        if (mWebRTCManager.getKurentoRoomAPI().isWebSocketConnected()) {
+            Log.i(TAG, "Initializing nbmWebRTCPeer...");
+            mNbmWebRTCPeer.initialize();
+            mWebRTCManager.initPeer = true;
+        }
         switch (mWebRTCManager.getCallType()) {
             case OFFER_PHONE_TYPE:
                 callStatusView();
@@ -295,13 +301,13 @@ public class AVChatWebRTCActivity extends AppCompatActivity implements NBMWebRTC
     @Override
     public void onRemoteStreamAdded(MediaStream mediaStream, NBMPeerConnection nbmPeerConnection) {
         Log.i(TAG, "  :" + nbmPeerConnection.getConnectionId()
-                + ",mediaStream:" + mediaStream.videoTracks.size());
+                + ",mediaStream:" + mediaStream.videoTracks.size()+"--->"+mediaStream.toString());
         final String id = nbmPeerConnection.getConnectionId();
         if (id.equals("local"))
             return;
-        mNbmWebRTCPeer.setActiveMasterStream(mediaStream);
+       // mNbmWebRTCPeer.setActiveMasterStream(mediaStream);
         mWebRTCManager.setCallState(WebRTCManager.CallState.IDLE);
-        //mNbmWebRTCPeer.attachRendererToRemoteStream(mMasterView, mediaStream);
+        mNbmWebRTCPeer.attachRendererToRemoteStream(mMasterView, mediaStream);
     }
 
     @Override
