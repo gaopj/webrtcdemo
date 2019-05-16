@@ -53,5 +53,20 @@
         android:layout_height="wrap_content"
         android:text="关音乐"
         />
+    <EditText
+        android:id="@+id/localEdt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="自己账号"/>
+    <EditText
+        android:id="@+id/otherEdt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="对方账号"/>
+    <EditText
+        android:id="@+id/roomEdt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="群聊房间"/>
 
 </LinearLayout>

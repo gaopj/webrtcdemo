@@ -58,7 +58,6 @@ public class AVChatWebRTCActivity extends AppCompatActivity implements NBMWebRTC
     private Observer<WebRTCManager.CallState> statusObserver;
 
 
-
     protected static void outgoingCall(Context context, String otherName) {
         Intent intent = new Intent();
         intent.setClass(context, AVChatWebRTCActivity.class);
@@ -110,11 +109,14 @@ public class AVChatWebRTCActivity extends AppCompatActivity implements NBMWebRTC
                         case INIT:
                             callStatusTxt.setText("初始化...");
                         case IDLE:
-                            callStatusTxt.setText("");
+                            callStatusTxt.setText("等待对方连接...");
                             break;
                         case JOIN_ROOM:
                             if (mNbmWebRTCPeer != null)
                                 mNbmWebRTCPeer.generateOffer("local", true);
+                            break;
+                        case CONNECT:
+                            callStatusTxt.setText("");
                             break;
                         case FINISH:
                             mMasterView.setVisibility(View.INVISIBLE);
@@ -175,7 +177,13 @@ public class AVChatWebRTCActivity extends AppCompatActivity implements NBMWebRTC
     @Override
     protected void onPause() {
         if (mNbmWebRTCPeer != null)
-            mNbmWebRTCPeer.stopLocalMedia();
+            try {
+                mNbmWebRTCPeer.stopLocalMedia();
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+
+
         super.onPause();
     }
 
@@ -274,12 +282,7 @@ public class AVChatWebRTCActivity extends AppCompatActivity implements NBMWebRTC
 
     @Override
     public void onIceCandidate(IceCandidate iceCandidate, NBMPeerConnection nbmPeerConnection) {
-        Log.i(TAG, "onIceCandidate");
-        Log.i(TAG, "onIceCandidate:callState= " + mWebRTCManager.getCallState());
-        Log.i(TAG, "onIceCandidate:callState= " + iceCandidate.sdpMid);
-        Log.i(TAG, "onIceCandidate:callState= " + iceCandidate.sdpMLineIndex);
-        Log.i(TAG, "onIceCandidate:callState= " + iceCandidate.sdp);
-
+        Log.i(TAG, "onIceCandidate:" + iceCandidate.toString());
         String connectionId = nbmPeerConnection.getConnectionId();
 
         if (connectionId.equals("local")) {
@@ -301,12 +304,15 @@ public class AVChatWebRTCActivity extends AppCompatActivity implements NBMWebRTC
     @Override
     public void onRemoteStreamAdded(MediaStream mediaStream, NBMPeerConnection nbmPeerConnection) {
         Log.i(TAG, "  :" + nbmPeerConnection.getConnectionId()
-                + ",mediaStream:" + mediaStream.videoTracks.size()+"--->"+mediaStream.toString());
+                + ",mediaStream:" + mediaStream.videoTracks.size() + "--->" + mediaStream.toString());
         final String id = nbmPeerConnection.getConnectionId();
-        if (id.equals("local"))
+        if (id.equals("local")) {
+            mWebRTCManager.setCallState(WebRTCManager.CallState.IDLE);
             return;
-       // mNbmWebRTCPeer.setActiveMasterStream(mediaStream);
-        mWebRTCManager.setCallState(WebRTCManager.CallState.IDLE);
+        }
+        // mNbmWebRTCPeer.setActiveMasterStream(mediaStream);
+        if (mWebRTCManager.getCallState().getValue() != WebRTCManager.CallState.CONNECT)
+            mWebRTCManager.setCallState(WebRTCManager.CallState.CONNECT);
         mNbmWebRTCPeer.attachRendererToRemoteStream(mMasterView, mediaStream);
     }
 

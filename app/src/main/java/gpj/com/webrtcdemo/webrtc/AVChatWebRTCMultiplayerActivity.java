@@ -51,6 +51,11 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
     private SurfaceViewRenderer mRemoteView1;
     private SurfaceViewRenderer mRemoteView2;
     private SurfaceViewRenderer mRemoteView3;
+    private SurfaceViewRenderer mRemoteView4;
+    private SurfaceViewRenderer mRemoteView5;
+    private SurfaceViewRenderer mRemoteView6;
+    private SurfaceViewRenderer mRemoteView7;
+    private SurfaceViewRenderer mRemoteView8;
     private TextView callStatusTxt;
     private ImageButton mCallButton;
     private ImageButton mHangupButton;
@@ -75,6 +80,11 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
         mRemoteView1 = findViewById(R.id.gl_surface_1);
         mRemoteView2 = findViewById(R.id.gl_surface_2);
         mRemoteView3 = findViewById(R.id.gl_surface_3);
+        mRemoteView4 = findViewById(R.id.gl_surface_4);
+        mRemoteView5 = findViewById(R.id.gl_surface_5);
+        mRemoteView6 = findViewById(R.id.gl_surface_6);
+        mRemoteView7 = findViewById(R.id.gl_surface_7);
+        mRemoteView8 = findViewById(R.id.gl_surface_8);
 
         callStatusTxt = findViewById(R.id.call_status);
         mCallButton = findViewById(R.id.answerCallButton);
@@ -113,6 +123,9 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
                                 mNbmWebRTCPeer.generateOffer("local", true);
                             break;
                         case IDLE:
+                            callStatusTxt.setText("等待对方连接");
+                            break;
+                        case CONNECT:
                             callStatusTxt.setText("");
                             break;
                         case FINISH:
@@ -126,6 +139,21 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
                             break;
                         case SURFACE3_CLOSE:
                             mRemoteView3.setVisibility(View.INVISIBLE);
+                            break;
+                        case SURFACE4_CLOSE:
+                            mRemoteView4.setVisibility(View.INVISIBLE);
+                            break;
+                        case SURFACE5_CLOSE:
+                            mRemoteView5.setVisibility(View.INVISIBLE);
+                            break;
+                        case SURFACE6_CLOSE:
+                            mRemoteView6.setVisibility(View.INVISIBLE);
+                            break;
+                        case SURFACE7_CLOSE:
+                            mRemoteView7.setVisibility(View.INVISIBLE);
+                            break;
+                        case SURFACE8_CLOSE:
+                            mRemoteView8.setVisibility(View.INVISIBLE);
                             break;
                     }
                 }
@@ -142,6 +170,16 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
             mRemoteView2.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
             mRemoteView3.init(rootEglBase.getEglBaseContext(), null);
             mRemoteView3.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+            mRemoteView4.init(rootEglBase.getEglBaseContext(), null);
+            mRemoteView4.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+            mRemoteView5.init(rootEglBase.getEglBaseContext(), null);
+            mRemoteView5.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+            mRemoteView6.init(rootEglBase.getEglBaseContext(), null);
+            mRemoteView6.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+            mRemoteView7.init(rootEglBase.getEglBaseContext(), null);
+            mRemoteView7.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+            mRemoteView8.init(rootEglBase.getEglBaseContext(), null);
+            mRemoteView8.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
         } catch (IllegalStateException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -265,11 +303,8 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
 
     @Override
     public void onIceCandidate(IceCandidate iceCandidate, NBMPeerConnection nbmPeerConnection) {
-        Log.i(TAG, "onIceCandidate");
-        Log.i(TAG, "onIceCandidate:callState= " + mWebRTCManager.getCallState());
-        Log.i(TAG, "onIceCandidate:callState= " + iceCandidate.sdpMid);
-        Log.i(TAG, "onIceCandidate:callState= " + iceCandidate.sdpMLineIndex);
-        Log.i(TAG, "onIceCandidate:callState= " + iceCandidate.sdp);
+        Log.i(TAG, "onIceCandidate:"+iceCandidate.toString());
+
         String connectionId = nbmPeerConnection.getConnectionId();
 
         if (connectionId.equals("local")) {
@@ -294,16 +329,19 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
                 + ",mediaStream:" + mediaStream.videoTracks.size());
 
         final String id = nbmPeerConnection.getConnectionId();
-        if (id.equals("local"))
+        if (id.equals("local")) {
+            mWebRTCManager.setCallState(WebRTCManager.CallState.IDLE);
             return;
-
+        }
+        if (mWebRTCManager.getCallState().getValue() != WebRTCManager.CallState.CONNECT)
+            mWebRTCManager.setCallState(WebRTCManager.CallState.CONNECT);
         mWebRTCManager.getHandler().post(new Runnable() {
             @Override
             public void run() {
                 bindSurface(mediaStream, id);
             }
         });
-        mWebRTCManager.setCallState(WebRTCManager.CallState.IDLE);
+
 
     }
 
@@ -362,6 +400,12 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
         mRemoteView1.setVisibility(View.VISIBLE);
         mRemoteView2.setVisibility(View.VISIBLE);
         mRemoteView3.setVisibility(View.VISIBLE);
+        mRemoteView4.setVisibility(View.VISIBLE);
+        mRemoteView5.setVisibility(View.VISIBLE);
+        mRemoteView6.setVisibility(View.VISIBLE);
+        mRemoteView7.setVisibility(View.VISIBLE);
+        mRemoteView8.setVisibility(View.VISIBLE);
+
         mLocalView.setVisibility(View.VISIBLE);
         mCallButton.setVisibility(View.GONE);
         mHangupButton.setVisibility(View.VISIBLE);
@@ -371,6 +415,11 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
         mRemoteView1.setVisibility(View.VISIBLE);
         mRemoteView2.setVisibility(View.VISIBLE);
         mRemoteView3.setVisibility(View.VISIBLE);
+        mRemoteView4.setVisibility(View.VISIBLE);
+        mRemoteView5.setVisibility(View.VISIBLE);
+        mRemoteView6.setVisibility(View.VISIBLE);
+        mRemoteView7.setVisibility(View.VISIBLE);
+        mRemoteView8.setVisibility(View.VISIBLE);
         mLocalView.setVisibility(View.VISIBLE);
         mCallButton.setVisibility(View.VISIBLE);
         mHangupButton.setVisibility(View.VISIBLE);
@@ -399,6 +448,26 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
                         mRemoteView3.setVisibility(View.VISIBLE);
                         mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView3, mediaStream);
                         break;
+                    case 3:
+                        mRemoteView4.setVisibility(View.VISIBLE);
+                        mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView4, mediaStream);
+                        break;
+                    case 4:
+                        mRemoteView5.setVisibility(View.VISIBLE);
+                        mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView5, mediaStream);
+                        break;
+                    case 5:
+                        mRemoteView6.setVisibility(View.VISIBLE);
+                        mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView6, mediaStream);
+                        break;
+                    case 6:
+                        mRemoteView7.setVisibility(View.VISIBLE);
+                        mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView7, mediaStream);
+                        break;
+                    case 7:
+                        mRemoteView8.setVisibility(View.VISIBLE);
+                        mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView8, mediaStream);
+                        break;
 
                 }
 
@@ -426,6 +495,27 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
                         mRemoteView3.setVisibility(View.VISIBLE);
                         mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView3, mediaStream);
                         break;
+                    case 3:
+                        mRemoteView4.setVisibility(View.VISIBLE);
+                        mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView4, mediaStream);
+                        break;
+                    case 4:
+                        mRemoteView5.setVisibility(View.VISIBLE);
+                        mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView5, mediaStream);
+                        break;
+                    case 5:
+                        mRemoteView6.setVisibility(View.VISIBLE);
+                        mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView6, mediaStream);
+                        break;
+                    case 6:
+                        mRemoteView7.setVisibility(View.VISIBLE);
+                        mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView7, mediaStream);
+                        break;
+                    case 7:
+                        mRemoteView8.setVisibility(View.VISIBLE);
+                        mNbmWebRTCPeer.attachRendererToRemoteStream(mRemoteView8, mediaStream);
+                        break;
+
                 }
                 mWebRTCManager.getSurfaceUserArray()[i] = chatUser;
                 return;
@@ -446,6 +536,21 @@ public class AVChatWebRTCMultiplayerActivity extends AppCompatActivity implement
                         break;
                     case 2:
                         mRemoteView3.setVisibility(View.INVISIBLE);
+                        break;
+                    case 3:
+                        mRemoteView4.setVisibility(View.INVISIBLE);
+                        break;
+                    case 4:
+                        mRemoteView5.setVisibility(View.INVISIBLE);
+                        break;
+                    case 5:
+                        mRemoteView6.setVisibility(View.INVISIBLE);
+                        break;
+                    case 6:
+                        mRemoteView7.setVisibility(View.INVISIBLE);
+                        break;
+                    case 7:
+                        mRemoteView8.setVisibility(View.INVISIBLE);
                         break;
                 }
 

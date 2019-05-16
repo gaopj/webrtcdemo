@@ -44,6 +44,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:visibility="visible"/>
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/gl_surface_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="visible"/>
         </LinearLayout>
 
         <LinearLayout
@@ -54,7 +61,7 @@
             >
 
             <org.webrtc.SurfaceViewRenderer
-                android:id="@+id/gl_surface_2"
+                android:id="@+id/gl_surface_3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -62,7 +69,45 @@
                 android:visibility="visible"/>
 
             <org.webrtc.SurfaceViewRenderer
-                android:id="@+id/gl_surface_3"
+                android:id="@+id/gl_surface_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="visible"/>
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/gl_surface_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="visible"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            >
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/gl_surface_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+
+                android:visibility="visible"/>
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/gl_surface_7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="visible"/>
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/gl_surface_8"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

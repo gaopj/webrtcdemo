@@ -52,7 +52,7 @@ public class WebRTCManager implements RoomListener {
     protected static final int ONE_TO_ONE_CHAT = 301;
     protected static final int MULTI_TO_MULTI_CHAT = 302;
 
-    protected static final int REMOTE_SURFACE_NUMBER = 3;
+    protected static final int REMOTE_SURFACE_NUMBER = 8;
 
 
     private WebRTCManager() {
@@ -67,7 +67,10 @@ public class WebRTCManager implements RoomListener {
     }
 
     protected enum CallState {
-        INIT, JOIN_ROOM, IDLE, FINISH, SURFACE1_CLOSE, SURFACE2_CLOSE, SURFACE3_CLOSE
+        INIT, JOIN_ROOM, IDLE, CONNECT, FINISH,
+        SURFACE1_CLOSE, SURFACE2_CLOSE, SURFACE3_CLOSE,
+        SURFACE4_CLOSE, SURFACE5_CLOSE, SURFACE6_CLOSE,
+        SURFACE7_CLOSE, SURFACE8_CLOSE
     }
 
 
@@ -317,7 +320,8 @@ public class WebRTCManager implements RoomListener {
                 if (mChatMode == ONE_TO_ONE_CHAT)
                     hungUp();
                 else {
-                    mNbmWebRTCPeer.closeConnection(name);
+                    if (mNbmWebRTCPeer != null)
+                        mNbmWebRTCPeer.closeConnection(name);
                 }
                 break;
             case RoomListener.METHOD_SEND_MESSAGE:
@@ -427,6 +431,22 @@ public class WebRTCManager implements RoomListener {
                     case 2:
                         mCallState.postValue(CallState.SURFACE3_CLOSE);
                         break;
+                    case 3:
+                        mCallState.postValue(CallState.SURFACE4_CLOSE);
+                        break;
+                    case 4:
+                        mCallState.postValue(CallState.SURFACE5_CLOSE);
+                        break;
+                    case 5:
+                        mCallState.postValue(CallState.SURFACE6_CLOSE);
+                        break;
+                    case 6:
+                        mCallState.postValue(CallState.SURFACE7_CLOSE);
+                        break;
+                    case 7:
+                        mCallState.postValue(CallState.SURFACE8_CLOSE);
+                        break;
+
                 }
                 mSurfaceUserArray[i] = null;
                 return;

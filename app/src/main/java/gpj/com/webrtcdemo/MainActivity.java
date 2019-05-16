@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import gpj.com.webrtcdemo.webrtc.WebRTCManager;
 
@@ -25,6 +26,13 @@ public class MainActivity extends AppCompatActivity {
     Button mButton5;
     Button mButton6;
 
+    EditText localEdt;
+    EditText otherEdt;
+    EditText roomEdt;
+    String localName;
+    String otherName;
+    String roomName;
+
     AsyncPlayer asyncPlayer;
 
     @Override
@@ -38,12 +46,28 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 0);
         }
 
+
+        localEdt = findViewById(R.id.localEdt);
+        otherEdt = findViewById(R.id.otherEdt);
+        roomEdt = findViewById(R.id.roomEdt);
+
         WebRTCManager.getInstance().init(this);
         mButton = findViewById(R.id.button);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WebRTCManager.webRTCCall(MainActivity.this, OFFER_PHONE_TYPE, "aaa1", "bbb1", "hahah");
+                if(localEdt.getText() ==null||localEdt.getText().toString().equals("")){
+                    localName = "aa1";
+                }else{
+                    localName = localEdt.getText().toString();
+                }
+
+                if(otherEdt.getText() ==null||otherEdt.getText().toString().equals("")){
+                    otherName = "bb1";
+                }else{
+                    otherName = otherEdt.getText().toString();
+                }
+                WebRTCManager.webRTCCall(MainActivity.this, OFFER_PHONE_TYPE, localName, otherName, "hahah");
             }
         });
 
@@ -51,7 +75,18 @@ public class MainActivity extends AppCompatActivity {
         mButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WebRTCManager.webRTCCall(MainActivity.this, ANSWER_PHONE_TYPE, "bbb1", "aaa1", "lalala");
+                if(localEdt.getText() ==null||localEdt.getText().toString().equals("")){
+                    localName = "bb1";
+                }else{
+                    localName = localEdt.getText().toString();
+                }
+
+                if(otherEdt.getText() ==null||otherEdt.getText().toString().equals("")){
+                    otherName = "aa1";
+                }else{
+                    otherName = otherEdt.getText().toString();
+                }
+                WebRTCManager.webRTCCall(MainActivity.this, ANSWER_PHONE_TYPE, localName, otherName, "lalala");
             }
         });
 
@@ -60,7 +95,13 @@ public class MainActivity extends AppCompatActivity {
         mButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WebRTCManager.webRTCMultiplayerCall(MainActivity.this, OFFER_PHONE_TYPE, name, "rommmm17");
+
+                if(roomEdt.getText() ==null||roomEdt.getText().toString().equals("")){
+                    roomName = "rommmm16";
+                }else{
+                    roomName = roomEdt.getText().toString();
+                }
+                WebRTCManager.webRTCMultiplayerCall(MainActivity.this, OFFER_PHONE_TYPE, name, roomName);
             }
         });
 
@@ -68,7 +109,12 @@ public class MainActivity extends AppCompatActivity {
         mButton4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WebRTCManager.webRTCMultiplayerCall(MainActivity.this, ANSWER_PHONE_TYPE, name, "rommmm17");
+                if(roomEdt.getText() ==null||roomEdt.getText().toString().equals("")){
+                    roomName = "rommmm16";
+                }else{
+                    roomName = roomEdt.getText().toString();
+                }
+                WebRTCManager.webRTCMultiplayerCall(MainActivity.this, ANSWER_PHONE_TYPE, name, roomName);
             }
         });
 
